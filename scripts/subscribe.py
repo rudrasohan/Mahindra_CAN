@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+import rospy
+from std_msgs.msg import String
+import canlib.canlib as canlib
+import time
+import thread
+global char
+char = 'b'
+
+def setUpChannel(channel=0,
+                 openFlags=canlib.canOPEN_ACCEPT_VIRTUAL,
+                 bitrate=canlib.canBITRATE_500K,
+                 bitrateFlags=canlib.canDRIVER_NORMAL):
+    cl = canlib.canlib()
+    ch = cl.openChannel(channel, openFlags)
+    print("Using channel: %s, EAN: %s" % (ch.getChannelData_Name(),
+                                          ch.getChannelData_EAN()))
+    ch.setBusOutputControl(bitrateFlags)
+    ch.setBusParams(bitrate)
+    ch.busOn()
+    return ch
+
+def tearDownChannel(ch):
+    ch.busOff()
+    ch.close()
+
+def callback(data):
+    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+    global char
+    if data.data == 'a':
+        char = 'a'
+    elif data.data == 'd':
+        char = 'd'
+
+def listener(delay):
+    rospy.init_node('subscribe', anonymous=True)
+    rospy.Subscriber("chatter", String, callback)
+    print delay
+    #time.sleep(delay/1000)
+    rospy.spin()
+
+def c_send():
+   global char
+   while (1):
+       if char  == 'a':
+           msgId = 0x774
+           msg = [0, 0, 0,0,0,0,0,1]
+           flg = canlib.canMSG_STD     #use canlib.canMSG_EXT for using extended arbitration ID 18 bits
+           ch0.write(msgId, msg, flg)
+       elif char == 'd':
+           msgId = 0x774
+           msg = [0, 0, 0,0,0,0,0,2]
+           flg = canlib.canMSG_STD
+           ch0.write(msgId, msg, flg)
+       time.sleep(10/1000)
+def c_recieve():
+    while True:
+        try:
+            (msgId, msg, dlc, flg, time) = ch0.read()
+            data = ''.join(format(x, '02x') for x in msg)
+            print("time:%9d id:%9d  flag:0x%02x  dlc:%d  data:%s" %
+            (time, msgId, flg, dlc, data))
+        except:
+            pass
+if __name__ == '__main__':
+    cl = canlib.canlib()
+    print("canlib version: %s" % cl.getVersion())
+
+
+    channel_0 = 0
+    ch0 = setUpChannel(channel=0)
+    thread.start_new_thread( c_send , ())
+    thread.start_new_thread( c_recieve , ())
+    listener(10)
+
+    #while 1:
+        #pass
+    tearDownChannel(ch0)
