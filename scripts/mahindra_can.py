@@ -76,7 +76,7 @@ def c_send():
    global L_flag
    while (1):
        if status=="start":
-           '''
+           
            if char  == "W_ON":
                msgId = 0x76E
                msg = [0, 0, 0,0,0,0,0,127]
@@ -116,7 +116,7 @@ def c_send():
                msgId = 0x776
                msg = [0,0,0,0,0,0,32,9]
                flg = canlib.canMSG_STD
-               ch0.write(msgId, msg, flg)'''
+               ch0.write(msgId, msg, flg)
 	   if H_flag:
 		   msgId = 0x776
 		   msg = [0,0,0,0,0,0,32,13]

@@ -106,7 +106,7 @@ def c_send():
                msgId = 0x776
                msg = [0,0,0,0,0,0,0,0]
                flg = canlib.canMSG_STD
-               ch0.write(msgId, msg, flg) 
+               ch0.write(msgId, msg, flg)
            if char == "H_ON":
                msgId = 0x776
                msg = [0,0,0,0,0,0,32,11]
@@ -131,35 +131,35 @@ def c_send():
 		msgId2 = 0X774
   	        msg2 = [0,0,0,0,0,0,216,130]
 	        flg2 = canlib.canMSG_STD
-	        ch0.write(msgId2, msg2, flg2)
+	        ch0.write(msgId2, msg2, flg)
 	   elif L_flag:
 		msgId2 = 0X774
   	        msg2 = [0,0,0,0,0,0,216,129]
 	        flg2 = canlib.canMSG_STD
-	        ch0.write(msgId2, msg2, flg2)
+	        ch0.write(msgId2, msg2, flg)
 	   else:
 	        msgId2 = 0X774
-  	        msg2 = [0,0,0,0,0,0,216,0]
+  	        msg2 = [0,0,0,0,0,0,216,1]
 	        flg2 = canlib.canMSG_STD
-	        ch0.write(msgId2, msg2, flg2)
+	        ch0.write(msgId2, msg2, flg)
            msgId1 = 0X778
 	   msg1 = [0,0,0,0,0,0,36,0]
 	   flg1 = canlib.canMSG_STD
-	   ch0.write(msgId1, msg1, flg1)
-           
+	   ch0.write(msgId1, msg1, flg)
+
            msgId3 = 0X772
 	   msg3 = [0,0,0,0,0,0,0,1]
 	   flg3 = canlib.canMSG_STD
-	   ch0.write(msgId3, msg3, flg3)
+	   ch0.write(msgId3, msg3, flg)
            msgId4 = 0X770
 	   msg4 = [0,0,0,0,0,0,0,1]
 	   flg4 = canlib.canMSG_STD
-	   ch0.write(msgId4, msg4, flg4)
+	   ch0.write(msgId4, msg4, flg)
            msgId4 = 0X76D
 	   msg4 = [0,0,0,0,0,0,0,40]
 	   flg4 = canlib.canMSG_STD
-	   ch0.write(msgId4, msg4, flg4)
-   	     
+	   ch0.write(msgId4, msg4, flg)
+
        time.sleep(10/1000)
 def c_recieve():
     while True:
