@@ -4,6 +4,7 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Joy
 import canlib.canlib as canlib
 import time
+from nav_msgs.msg import Odometry
 import thread
 from std_msgs.msg import Int16
 
@@ -21,7 +22,7 @@ status="start"
 S_flag=1
 Ind="Off"
 brake = 0
-
+rate = 0
 
 def setUpChannel(channel=0,
                  openFlags=canlib.canOPEN_ACCEPT_VIRTUAL,
@@ -120,10 +121,12 @@ def callback_accel(data):
 
 
 def start():
-    pub = rospy.Publisher('chatter',Int16,queue_size=1)
+	global rate
+    pub = rospy.Publisher('velocity_can',Int16,queue_size=10)
     rospy.init_node('subscribe', anonymous=True)
+    rate = rospy.Rate(100)
     rospy.Subscriber("joy",Joy, callback_joy)
-    rospy.Subscriber("accel",Int16,callback_accel)
+    #rospy.Subscriber("accel",Int16,callback_accel)
     rospy.spin()
 
 
@@ -263,16 +266,18 @@ def c_send():
 
 def c_recieve():
     global gear_stat
+    global rate
     while True:
         try:
             (msgId, msg, dlc, flg, time) = ch0.read()
             data = ''.join(format(x, '02x') for x in msg)
             if msgId == 0x76C:
                 if data[13]=='1':
-                    Velocity = int(msg[7])
+                    velocity = int(msg[7])
                     print "velocity : " , msg[7]
 
                     pub.publish(velocity)
+                    rate.sleep()
 
                 else:
                     print "Invalid velocity"
