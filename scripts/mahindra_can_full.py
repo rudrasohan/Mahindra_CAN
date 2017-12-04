@@ -266,6 +266,7 @@ def c_send():
 
 def c_recieve():
     global gear_stat
+    global rate
     while True:
         try:
             (msgId, msg, dlc, flg, time) = ch0.read()
